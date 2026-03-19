@@ -26,7 +26,7 @@ app.set('views', cfg.dir.views);
 
 // Session middleware
 app.use(session({
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET || whatever,
     resave: false,
     saveUninitialized: false,
     cookie: {
