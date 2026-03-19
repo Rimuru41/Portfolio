@@ -1,0 +1,359 @@
+<%- include('partials/_htmlheader.ejs') %>
+
+    <!-- Scanline CRT Overlay & Ambient Glow -->
+    <div class="scanline-overlay"></div>
+    <div class="ambient-glow"></div>
+
+    <!-- Floating Pixel Particles -->
+    <div class="pixel-particles" id="particles-container">
+        <!-- Rendered by JS -->
+    </div>
+
+    <!-- Global Navigation -->
+    <nav class="glass-nav">
+        <div class="logo">Dev<span class="neon-text">Quest</span> LVL.MAX</div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#lore">Lore</a></li>
+            <li><a href="#quests">Quests</a></li>
+            <li><a href="#achievements">Badges</a></li>
+            <li><a href="#contact">Guild</a></li>
+        </ul>
+    </nav>
+
+    <!-- Global XP Progress Bar (Fills on scroll) -->
+    <div class="global-progress-container">
+        <div class="global-progress-bar" id="scroll-xp-bar"></div>
+    </div>
+
+    <!-- Section: Hero Profile -->
+    <section id="home" class="hero content-section scroll-reveal">
+        <div class="hero-main glass-panel">
+            <h1 class="hero-title">Initiating <span class="gradient-text type-effect">Master</span> Protocol...</h1>
+            <p class="hero-subtitle">Software Architect & Researcher. Forging scalable backends and intelligent systems
+                in the fires of Mount Server.</p>
+
+            <!-- Player Stats -->
+            <div class="player-stats">
+                <div class="stat-item tilt-card">
+                    <span class="stat-icon">⚔️</span>
+                    <span class="stat-value" id="lvl-display">LVL 1</span>
+                    <span class="stat-label">Current Level</span>
+                </div>
+                <div class="stat-item tilt-card">
+                    <span class="stat-icon">🛡️</span>
+                    <span class="stat-value">
+                        <%= projects.length %>
+                    </span>
+                    <span class="stat-label">Quests Completed</span>
+                </div>
+                <div class="stat-item tilt-card">
+                    <span class="stat-icon">🏆</span>
+                    <span class="stat-value">
+                        <%= achievements.length %>
+                    </span>
+                    <span class="stat-label">Relics Found</span>
+                </div>
+                <div class="stat-item tilt-card">
+                    <span class="stat-icon">⚡</span>
+                    <span class="stat-value">BCT</span>
+                    <span class="stat-label">Class: Engineer</span>
+                </div>
+            </div>
+
+            <!-- Scroll XP Bar Detail -->
+            <div class="xp-bar-wrapper">
+                <div class="xp-label">
+                    <span>EXPERIENCE TO NEXT LEVEL</span>
+                    <span id="xp-text">0 / 10000 XP</span>
+                </div>
+                <div class="xp-bar">
+                    <div class="xp-fill glow-pulse" id="hero-xp-fill" style="width: 0%;"></div>
+                </div>
+            </div>
+
+            <div class="hero-actions">
+                <button id="load-skills" class="btn-primary cyber-btn">Scan Abilities [ENTER]</button>
+            </div>
+            <div id="skills-container" class="skills-box"></div>
+        </div>
+    </section>
+
+    <!-- Section: Experience Timeline (Lore) -->
+    <section id="lore" class="content-section">
+        <div class="section-header scroll-reveal">
+            <h2 class="section-title neon-title">Campaign History</h2>
+        </div>
+        <div class="timeline-container">
+            <% experience.forEach((exp, index)=> { %>
+                <div class="timeline-item scroll-reveal <%= index % 2 === 0 ? 'left' : 'right' %>">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content glass-card tilt-card">
+                        <span class="time-badge">
+                            <%= exp.duration %>
+                        </span>
+                        <h3>
+                            <%= exp.role %>
+                        </h3>
+                        <h4 class="org-name">@ <%= exp.organization %>
+                        </h4>
+                        <p>
+                            <%= exp.description %>
+                        </p>
+                    </div>
+                </div>
+                <% }); %>
+        </div>
+    </section>
+
+    <!-- Section: Quests (Projects) -->
+    <section id="quests" class="content-section">
+        <div class="section-header scroll-reveal">
+            <h2 class="section-title neon-title">Quest Log</h2>
+            <% if (isAdmin) { %>
+                <button id="add-project-btn" class="btn-primary cyber-btn"><span class="plus">+</span> Forge New
+                    Quest</button>
+                <% } %>
+        </div>
+
+        <h3 class="subsection-title scroll-reveal">» Main Sequence</h3>
+        <div class="project-grid main-quests scroll-reveal">
+            <% projects.filter(p=> !p.Category || p.Category.includes('Main') || p.Category.includes('Legendary') ||
+                p.Category.includes('Epic')).forEach(project => { %>
+                <div class="project-card tilt-card legendary-card" data-id="<%= project.id %>">
+                    <% if (isAdmin) { %>
+                        <div class="card-menu">
+                            <button class="menu-trigger">⋮</button>
+                            <div class="menu-dropdown">
+                                <button class="edit-btn" data-id="<%= project.id %>"
+                                    data-proj="<%= Buffer.from(JSON.stringify(project)).toString('base64') %>">Edit</button>
+                                <button class="delete-btn" data-id="<%= project.id %>">Delete</button>
+                            </div>
+                        </div>
+                        <% } %>
+                            <div class="card-image-wrapper">
+                                <div class="quest-rarity-badge">
+                                    <%= project.Category || 'Main Quest' %>
+                                </div>
+                                <div class="quest-difficulty">Difficulty: <%= Array(project.Difficulty ||
+                                        5).fill('★').join('') %>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <span class="tech-tag cyber-tag">
+                                    <%= project.Tech_Stack %>
+                                </span>
+                                <h3>
+                                    <%= project.Project_Name %>
+                                </h3>
+                                <p>
+                                    <%= project.Description %>
+                                </p>
+                                <a href="<%= project.Link %>" class="project-link cyber-link" target="_blank">Access
+                                    Terminal →</a>
+                            </div>
+                </div>
+                <% }); %>
+        </div>
+
+        <h3 class="subsection-title mt-4 scroll-reveal">» Side Quests</h3>
+        <div class="project-grid side-quests scroll-reveal">
+            <% projects.filter(p=> p.Category && p.Category.includes('Side')).forEach(project => { %>
+                <div class="project-card tilt-card side-card" data-id="<%= project.id %>">
+                    <% if (isAdmin) { %>
+                        <div class="card-menu">
+                            <button class="menu-trigger">⋮</button>
+                            <div class="menu-dropdown">
+                                <button class="edit-btn" data-id="<%= project.id %>"
+                                    data-proj="<%= Buffer.from(JSON.stringify(project)).toString('base64') %>">Edit</button>
+                                <button class="delete-btn" data-id="<%= project.id %>">Delete</button>
+                            </div>
+                        </div>
+                        <% } %>
+                            <div class="card-content">
+                                <div class="quest-rarity-badge small-badge">Side Quest</div>
+                                <span class="tech-tag cyber-tag">
+                                    <%= project.Tech_Stack %>
+                                </span>
+                                <h3>
+                                    <%= project.Project_Name %>
+                                </h3>
+                                <p>
+                                    <%= project.Description %>
+                                </p>
+                                <a href="<%= project.Link %>" class="project-link cyber-link" target="_blank">Access
+                                    Terminal →</a>
+                            </div>
+                </div>
+                <% }); %>
+        </div>
+    </section>
+
+    <!-- Section: Achievements Vault -->
+    <section id="achievements" class="content-section">
+        <div class="section-header scroll-reveal">
+            <h2 class="section-title neon-title">Relic Vault</h2>
+        </div>
+        <div class="achievements-grid scroll-reveal">
+            <% achievements.forEach((ach)=> { %>
+                <div class="achievement-card <%= ach.unlocked ? 'unlocked' : 'locked' %> tilt-card">
+                    <div class="achievement-icon-wrapper">
+                        <span class="achievement-icon">
+                            <%= ach.icon %>
+                        </span>
+                    </div>
+                    <div class="achievement-info">
+                        <h4>
+                            <%= ach.title %>
+                        </h4>
+                        <p>
+                            <%= ach.description %>
+                        </p>
+                    </div>
+                </div>
+                <% }); %>
+        </div>
+    </section>
+
+    <!-- Section: Contact (Guild) -->
+    <section id="contact" class="content-section scroll-reveal">
+        <div class="centered-header">
+            <h2 class="section-title neon-title">Establish Link</h2>
+        </div>
+        <div class="contact-container">
+            <div class="contact-card glass-panel">
+                <div class="contact-grid">
+                    <div class="contact-item cyber-hover">
+                        <span class="icon neon-glow">📧</span>
+                        <div>
+                            <h3>Comm Channel</h3><a
+                                href="mailto:kamalshrestha17104@gmail.com">kamalshrestha17104@gmail.com</a>
+                        </div>
+                    </div>
+                    <div class="contact-item cyber-hover">
+                        <span class="icon neon-glow">📱</span>
+                        <div>
+                            <h3>Direct Frequency</h3><a href="tel:+9779866233024">+977 9866233024</a>
+                        </div>
+                    </div>
+                    <div class="contact-item cyber-hover">
+                        <span class="icon neon-glow">💻</span>
+                        <div>
+                            <h3>Source Repos</h3><a href="https://github.com/Rimuru41"
+                                target="_blank">github.com/Rimuru41</a>
+                        </div>
+                    </div>
+                    <div class="contact-item cyber-hover">
+                        <span class="icon neon-glow">🔗</span>
+                        <div>
+                            <h3>Professional Network</h3><a href="https://www.linkedin.com/in/kamal-shrestha-6b3228324/"
+                                target="_blank">kamal-shrestha...</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <% if (isAdmin) { %>
+        <!-- Project Modal (Expanded) -->
+        <div id="project-modal" class="modal cyber-modal">
+            <div class="modal-content glass-panel">
+                <h2 id="modal-title" class="neon-text">Forging Interface</h2>
+                <form id="project-form">
+                    <input type="hidden" id="project-id">
+                    <div class="form-row">
+                        <div class="form-group flex-2">
+                            <label>Quest Title</label>
+                            <input type="text" id="title" required class="cyber-input">
+                        </div>
+                        <div class="form-group flex-1">
+                            <label>Designation</label>
+                            <select id="category" class="cyber-input">
+                                <option>Main Quest</option>
+                                <option>Side Quest</option>
+                                <option>Legendary Quest</option>
+                                <option>Epic Boss Fight</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Threat Level (1-10)</label>
+                        <input type="number" id="difficulty" min="1" max="10" value="5" class="cyber-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Mission Briefing</label>
+                        <textarea id="description" required class="cyber-input"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Weapons / Tech Stack</label>
+                        <input type="text" id="tech_stack" required class="cyber-input">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group flex-1">
+                            <label>Terminal Link</label>
+                            <input type="url" id="link" required class="cyber-input">
+                        </div>
+                        <div class="form-group flex-1">
+                            <label>Hologram URL (Image)</label>
+                            <input type="text" id="image_url" class="cyber-input" placeholder="/images/default.png">
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-ghost closeModal">Abort</button>
+                        <button type="submit" class="btn-primary cyber-btn">Commit to Database</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="delete-modal" class="modal cyber-modal">
+            <div class="modal-content glass-panel warning-border">
+                <h2 class="danger-text">Warning: Destructive Sync</h2>
+                <p>Obliterate this record permanently from the continuum?</p>
+                <div class="form-actions">
+                    <button class="btn-ghost closeModal">Abort</button>
+                    <button id="confirm-delete-btn" class="btn-danger cyber-btn">Execute Erase</button>
+                </div>
+            </div>
+        </div>
+        <% } %>
+
+            <!-- Login Modal -->
+            <div id="login-modal" class="modal cyber-modal">
+                <div class="modal-content glass-panel login-modal-content">
+                    <h2 class="neon-text">System Override</h2>
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label>Admin ID</label>
+                            <input type="text" id="login-username" required class="cyber-input">
+                        </div>
+                        <div class="form-group">
+                            <label>Passcode</label>
+                            <input type="password" id="login-password" required class="cyber-input">
+                        </div>
+                        <div id="login-error" class="login-error danger-text"></div>
+                        <div class="form-actions">
+                            <button type="button" class="btn-ghost closeModal">Disconnect</button>
+                            <button type="submit" class="btn-primary cyber-btn">Bypass Security</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <button id="admin-corner-btn" class="admin-corner cyber-fab" title="Admin Terminal">
+                <%= isAdmin ? '🔴' : '🔐' %>
+            </button>
+
+            <!-- Scroll Notification Tooltip -->
+            <div id="level-up-toast" class="level-up-toast hidden">
+                <h2 class="level-up-title glow-pulse">LEVEL UP!</h2>
+                <p>You reached Level <span id="toast-lvl">2</span></p>
+            </div>
+
+            <script>
+                window.__isAdmin = <%= isAdmin ? 'true' : 'false' %>;
+            </script>
+            <script src="/script.js"></script>
+
+            <%- include('partials/_htmlfoot.ejs') %>

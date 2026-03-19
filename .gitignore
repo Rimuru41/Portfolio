@@ -1,0 +1,15 @@
+node_modules/
+.vscode/
+.env
+init.sql
+Lab2_Report.aux
+Lab2_Report.fdb_latexmk
+Lab2_Report.fls
+Lab2_Report.log
+Lab2_Report.md
+Lab2_Report.out
+Lab2_Report.tex
+Lab2_Report.synctex.gz
+lab2.txt
+lab2.pdf
+Lab2_Report.pdf
