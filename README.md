@@ -2,7 +2,7 @@
 
 A personal portfolio designed to showcase projects and technical skills. Built with **Node.js**, **Express**, and **PostgreSQL**, this application features a real-time admin dashboard for seamless content management.
 
-🔗 **Live Demo:** [https://portfolio-production-3072.up.railway.app/)
+🔗 **Live Demo:** https://portfolio-production-3072.up.railway.app/
 
 ---
 
